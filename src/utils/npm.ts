@@ -71,7 +71,14 @@ export async function installGlobal(
       timeout
     };
 
-    await exec('npm', ['install', '-g', packageSpec], execOptions);
+    const result = await exec('npm', ['install', '-g', packageSpec], execOptions);
+
+    if (result.code !== 0) {
+      throw new Error(
+        `npm install exited with code ${result.code}: ${result.stderr || result.stdout}`
+      );
+    }
+
     logger.success(`${packageSpec} installed successfully`);
   } catch (error: unknown) {
     const { parseNpmError } = await import('./errors.js');
@@ -106,7 +113,14 @@ export async function uninstallGlobal(
       timeout
     };
 
-    await exec('npm', ['uninstall', '-g', packageName], execOptions);
+    const result = await exec('npm', ['uninstall', '-g', packageName], execOptions);
+
+    if (result.code !== 0) {
+      throw new Error(
+        `npm uninstall exited with code ${result.code}: ${result.stderr || result.stdout}`
+      );
+    }
+
     logger.success(`${packageName} uninstalled successfully`);
   } catch (error: unknown) {
     const { parseNpmError } = await import('./errors.js');
